@@ -9,27 +9,109 @@
         .box {
             border: 1px solid black;
             background-color: #ccc;
-            /*width: 100px;*/
-            /*height: 100px;*/
             position: absolute;
+            text-align: center;
+        }
+
+        .line {
+            position: absolute;
+            width: 2px;
+            margin-top: -1px;
+            background-color: red;
+            z-index: -1;
         }
     </style>
+
+    <script>
+        function adjustLine(fromId, toId, lineId) {
+            const from = document.getElementById(fromId);
+            const to = document.getElementById(toId);
+            const line = document.getElementById(lineId);
+
+            var fT = from.offsetTop + from.offsetHeight / 2;
+            var tT = to.offsetTop + to.offsetHeight / 2;
+            var fL = from.offsetLeft + from.offsetWidth / 2;
+            var tL = to.offsetLeft + to.offsetWidth / 2;
+
+            var CA = Math.abs(tT - fT);
+            var CO = Math.abs(tL - fL);
+            var H = Math.sqrt(CA * CA + CO * CO);
+            var ANG = 180 / Math.PI * Math.acos(CA / H);
+
+            if (tT > fT) {
+                var top = (tT - fT) / 2 + fT;
+            } else {
+                var top = (fT - tT) / 2 + tT;
+            }
+            if (tL > fL) {
+                var left = (tL - fL) / 2 + fL;
+            } else {
+                var left = (fL - tL) / 2 + tL;
+            }
+
+            if ((fT < tT && fL < tL) || (tT < fT && tL < fL) || (fT > tT && fL > tL) || (tT > fT && tL > fL)) {
+                ANG *= -1;
+            }
+            top -= H / 2;
+
+            line.style["-webkit-transform"] = 'rotate(' + ANG + 'deg)';
+            line.style["-moz-transform"] = 'rotate(' + ANG + 'deg)';
+            line.style["-ms-transform"] = 'rotate(' + ANG + 'deg)';
+            line.style["-o-transform"] = 'rotate(' + ANG + 'deg)';
+            line.style["-transform"] = 'rotate(' + ANG + 'deg)';
+            line.style.top = top + 'px';
+            line.style.left = left + 'px';
+            line.style.height = H + 'px';
+        }
+
+        $(document).ready(function () {
+            adjustLine('vatsim-feed-div', 'vatsim-download-div', 'vatsim-feed-to-vatsim-download-line');
+            adjustLine('vatsim-download-div', 'vatsim-storage-div', 'vatsim-download-to-vatsim-storage-line');
+            adjustLine('vatsim-storage-div', 'vatsim-parse-div', 'vatsim-storage-to-vatsim-parse-line');
+            adjustLine('vatsim-parse-div', 'vatsim-database-div', 'vatsim-parse-to-vatsim-database-line');
+            adjustLine('vatsim-database-div', 'vatsim-backend-div', 'vatsim-database-to-vatsim-backend-line');
+            adjustLine('vatsim-backend-div', 'map-application-div', 'vatsim-backend-to-map-application-line');
+
+            adjustLine('ivao-feed-div', 'ivao-download-div', 'ivao-feed-to-ivao-download-line');
+            adjustLine('ivao-download-div', 'ivao-storage-div', 'ivao-download-to-ivao-storage-line');
+            adjustLine('ivao-storage-div', 'ivao-parse-div', 'ivao-storage-to-ivao-parse-line');
+            adjustLine('ivao-parse-div', 'ivao-database-div', 'ivao-parse-to-ivao-database-line');
+            adjustLine('ivao-database-div', 'ivao-backend-div', 'ivao-database-to-ivao-backend-line');
+            adjustLine('ivao-backend-div', 'map-application-div', 'ivao-backend-to-map-application-line');
+        });
+    </script>
 </head>
 
 <body>
 <h1>simforge.net - Architecture</h1>
 
-<div class="box" style="top: 100px; left: 200px;">VATSIM Status Feed</div>
+<div id="vatsim-feed-div" class="box" style="top: 100px; left: 100px;">VATSIM<br>Status Feed</div>
+<div id="vatsim-feed-to-vatsim-download-line" class="line"></div>
+<div id="vatsim-download-div" class="box" style="top: 200px; left: 200px;">Download<br>Task</div>
+<div id="vatsim-download-to-vatsim-storage-line" class="line"></div>
+<div id="vatsim-storage-div" class="box" style="top: 250px; left: 150px;">Report<br>Storage</div>
+<div id="vatsim-storage-to-vatsim-parse-line" class="line"></div>
+<div id="vatsim-parse-div" class="box" style="top: 300px; left: 200px;">Parse<br>Task</div>
+<div id="vatsim-parse-to-vatsim-database-line" class="line"></div>
+<div id="vatsim-database-div" class="box" style="top: 350px; left: 300px;">VATSIM<br>Database</div>
+<div id="vatsim-database-to-vatsim-backend-line" class="line"></div>
+<div id="vatsim-backend-div" class="box" style="top: 400px; left: 200px;">Map<br>Backend</div>
+<div id="vatsim-backend-to-map-application-line" class="line"></div>
 
-<div class="box" style="top: 200px; left: 400px;">Download task</div>
-<div class="box" style="top: 250px; left: 250px;">Report storage</div>
-<div class="box" style="top: 300px; left: 400px;">Parse task</div>
+<div id="ivao-feed-div" class="box" style="top: 100px; left: 700px;">IVAO<br>Status Feed</div>
+<div id="ivao-feed-to-ivao-download-line" class="line"></div>
+<div id="ivao-download-div" class="box" style="top: 200px; left: 600px;">Download<br>Task</div>
+<div id="ivao-download-to-ivao-storage-line" class="line"></div>
+<div id="ivao-storage-div" class="box" style="top: 250px; left: 650px;">Report<br>Storage</div>
+<div id="ivao-storage-to-ivao-parse-line" class="line"></div>
+<div id="ivao-parse-div" class="box" style="top: 300px; left: 600px;">Parse<br>Task</div>
+<div id="ivao-parse-to-ivao-database-line" class="line"></div>
+<div id="ivao-database-div" class="box" style="top: 350px; left: 500px;">IVAO<br>Database</div>
+<div id="ivao-database-to-ivao-backend-line" class="line"></div>
+<div id="ivao-backend-div" class="box" style="top: 400px; left: 600px;">Map<br>Backend</div>
+<div id="ivao-backend-to-map-application-line" class="line"></div>
 
-<div class="box" style="top: 350px; left: 600px;">VATSIM database</div>
-
-<div class="box" style="top: 400px; left: 400px;">Map Backend</div>
-
-<div class="box" style="top: 450px; left: 900px;">Map Application</div>
+<div id="map-application-div" class="box" style="top: 500px; left: 400px;">Map<br>Application</div>
 
 </body>
 
